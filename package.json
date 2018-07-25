@@ -1,0 +1,57 @@
+{
+  "name": "redux-event-bus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cover": "nyc --check-coverage --lines 80 --functions 80 --branches 80 --statements 80 mocha ",
+    "test": "mocha",
+    "tsc": "tsc",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "build": "npm-run-all -s clean lint cover tsc",
+    "clean:build": "rimraf build/**",
+    "clean:lib": "rimraf lib/**",
+    "clean": "npm-run-all -l -p clean:lib clean:build"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "redux": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/sinon": "^5.0.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^12.0.2",
+    "rimraf": "^2.6.2",
+    "sinon": "^6.1.4",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ],
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "temp-directory": "./build/coverage/.nyc_output",
+    "report-dir": "./build/coverage",
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text",
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  }
+}
