@@ -37,19 +37,13 @@ export class EventEmitter {
             return;
         }
 
-        this.events[event].map((listener) => listener.apply(this, args)).forEach((finalizer) => {
-            if (typeof (finalizer) !== "function" || finalizer.length !== 0) {
-                return;
-            }
-
-            finalizer();
-        });
+        [...this.events[event]].forEach((listener) => listener.apply(this, args));
     }
 
     public once(event: string, listener: Listener): () => void {
         const remove: (() => void) = this.on(event, (...args: any[]) => {
+            remove();
             listener.apply(this, args);
-            return remove;
         });
 
         return remove;
