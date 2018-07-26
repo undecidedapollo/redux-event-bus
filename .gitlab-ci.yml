@@ -5,7 +5,6 @@ before_script:
 stages:
 - test
 - build
-- tagmaster
 - deploy
 
 test:node10:
@@ -14,6 +13,8 @@ test:node10:
   script:
     - npm install
     - npm run build:prod
+    - node -v
+    - npm -v
 
 
 test:node8:
@@ -22,6 +23,8 @@ test:node8:
   script:
     - npm install
     - npm run build:prod
+    - node -v
+    - npm -v
 
 test:node6:
   stage: test
@@ -29,3 +32,35 @@ test:node6:
   script:
     - npm install
     - npm run build:prod
+    - node -v
+    - npm -v
+
+build:
+  stage: build
+  image: node:8-alpine
+  artifacts:
+    paths:
+    - build/redux-event-bus-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA.tar.gz
+    expire_in: 1 year
+  script:
+    - npm install
+    - npm run tsc
+    - rm -r node_modules
+    - npm install --production
+    - node -v
+    - npm -v
+    - tar -zcf build/redux-event-bus-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA.tar.gz lib package.json package-lock.json
+  only:
+    - /^release-\d{1,3}[.]\d{1,3}.*$/
+
+deploy:stage:
+  stage: deploy
+  image: node:8-alpine
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - ls -la
+    - tar -zxvf build/redux-event-bus-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA.tar.gz .
+    - ls -la
+  only:
+    - /^release-\d{1,3}[.]\d{1,3}.*$/
