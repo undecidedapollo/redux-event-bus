@@ -1,0 +1,31 @@
+before_script:
+  - npm -v
+  - node -v
+
+stages:
+- test
+- build
+- tagmaster
+- deploy
+
+test:node10:
+  stage: test
+  image: node:10-alpine
+  script:
+    - npm install
+    - npm run build:prod
+
+
+test:node8:
+  stage: test
+  image: node:8-alpine
+  script:
+    - npm install
+    - npm run build:prod
+
+test:node6:
+  stage: test
+  image: node:6-alpine
+  script:
+    - npm install
+    - npm run build:prod
