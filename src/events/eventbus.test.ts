@@ -14,7 +14,7 @@ const EV_3 = {
     type: "EV_3",
 };
 
-describe("EventEmitter", () => {
+describe("EventBus", () => {
     let ev: EventBus = null;
 
     beforeEach(() => {
@@ -175,6 +175,28 @@ describe("EventEmitter", () => {
             const l1 = fake();
             ev.cancel(EV_1.type, l1);
             expect(l1.callCount).to.equal(0);
+        });
+    });
+
+    describe("cancelAll", () => {
+        it("should not call any listener on single event.", () => {
+            const l1 = fake();
+            ev.takeEvery(EV_1.type, l1);
+            ev.cancelAll();
+            ev.dispatch(EV_1);
+            expect(l1.callCount).to.equal(0);
+        });
+
+        it("should not call any listeners on any event.", () => {
+            const l1 = fake();
+            const l2 = fake();
+            ev.takeEvery(EV_1.type, l1);
+            ev.takeEvery(EV_2.type, l2);
+            ev.cancelAll();
+            ev.dispatch(EV_1);
+            ev.dispatch(EV_2);
+            expect(l1.callCount).to.equal(0);
+            expect(l2.callCount).to.equal(0);
         });
     });
 
