@@ -158,3 +158,9 @@ store.dispatch({
     }
 }); //Will not call listener above since it was cancelled.
 ```
+
+## License
+
+Copyright 2018 Jonah Nestrick
+
+MIT License
