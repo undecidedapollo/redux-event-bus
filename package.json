@@ -1,6 +1,6 @@
 {
   "name": "redux-event-bus",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Middleware for redux-event-bus that emits events to subscribed listeners whenever actions are dispatched.",
   "main": "lib/index.js",
   "readme": "README.md",
