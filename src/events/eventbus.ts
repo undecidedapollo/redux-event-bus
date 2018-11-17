@@ -31,6 +31,10 @@ export default class StandardEventBus implements IEventBus {
         this.emitter.removeListener(actionType, listener);
     }
 
+    public cancelAll = () => {
+        this.emitter.removeAllListeners();
+    }
+
     public takeOne = (actionType: string, listener: Listener) => {
         return this.emitter.once(actionType, listener);
     }

@@ -47,7 +47,9 @@ describe("EventBusMiddleware", () => {
                     const store = {};
                     const nextMiddleware = spy();
                     const dispatch = spy();
-                    const action = {};
+                    const action = {
+                        type: "TEST_ACTION",
+                    };
                     const eventBusSource = {
                         dispatch,
                     };
@@ -55,6 +57,37 @@ describe("EventBusMiddleware", () => {
                     result(store)(nextMiddleware)(action);
                     expect(dispatch.calledOnce).to.be.true;
                     expect(dispatch.alwaysCalledWithExactly(action)).to.be.true;
+                    expect(nextMiddleware.calledOnce).to.be.true;
+                    expect(nextMiddleware.alwaysCalledWithExactly(action)).to.be.true;
+                });
+
+                it("should not call dispatch if given function", () => {
+                    const store = {};
+                    const nextMiddleware = spy();
+                    const dispatch = spy();
+                    // tslint:disable-next-line:no-empty
+                    const action = () => { };
+                    const eventBusSource = {
+                        dispatch,
+                    };
+                    const result = createEventBusMiddleware(eventBusSource);
+                    result(store)(nextMiddleware)(action);
+                    expect(dispatch.callCount).to.equal(0);
+                    expect(nextMiddleware.calledOnce).to.be.true;
+                    expect(nextMiddleware.alwaysCalledWithExactly(action)).to.be.true;
+                });
+
+                it("should not call dispatch if given string", () => {
+                    const store = {};
+                    const nextMiddleware = spy();
+                    const dispatch = spy();
+                    const action = "TEST_STRING";
+                    const eventBusSource = {
+                        dispatch,
+                    };
+                    const result = createEventBusMiddleware(eventBusSource);
+                    result(store)(nextMiddleware)(action);
+                    expect(dispatch.callCount).to.equal(0);
                     expect(nextMiddleware.calledOnce).to.be.true;
                     expect(nextMiddleware.alwaysCalledWithExactly(action)).to.be.true;
                 });
