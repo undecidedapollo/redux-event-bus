@@ -14,6 +14,7 @@ export default class StandardEventBus implements IEventBus {
     get receiver(): IEventBusReceiver {
         return {
             cancel: this.cancel,
+            takeAll: this.takeAll,
             takeEvery: this.takeEvery,
             takeOne: this.takeOne,
         };
@@ -33,6 +34,10 @@ export default class StandardEventBus implements IEventBus {
 
     public cancelAll = () => {
         this.emitter.removeAllListeners();
+    }
+
+    public takeAll = (listener: Listener) => {
+        return this.emitter.all(listener);
     }
 
     public takeOne = (actionType: string, listener: Listener) => {

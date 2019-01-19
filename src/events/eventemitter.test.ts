@@ -19,6 +19,46 @@ describe("EventEmitter", () => {
         ev = new EventEmitter();
     });
 
+    describe("all", () => {
+        it("should call listener when event is emitted.", () => {
+            const l1 = fake();
+            ev.all(l1);
+            ev.emit(EV_1);
+            expect(l1.callCount).to.equal(1);
+            expect(l1.alwaysCalledWithExactly()).to.be.true;
+        });
+
+        it("should call multiple listeners that are subscribed.", () => {
+            const l1 = fake();
+            const l2 = fake();
+            ev.all(l1);
+            ev.all(l2);
+            ev.emit(EV_1);
+            expect(l1.callCount).to.equal(1);
+            expect(l1.alwaysCalledWithExactly()).to.be.true;
+            expect(l2.callCount).to.equal(1);
+            expect(l2.alwaysCalledWithExactly()).to.be.true;
+        });
+
+        it("should call listener multiple times when event is emitted multiple times.", () => {
+            const l1 = fake();
+            ev.all(l1);
+            ev.emit(EV_1);
+            ev.emit(EV_1);
+            ev.emit(EV_1);
+            expect(l1.callCount).to.equal(3);
+            expect(l1.alwaysCalledWithExactly()).to.be.true;
+        });
+
+        it("should not call listener if same listener removed", () => {
+            const l1 = fake();
+            const removal = ev.all(l1);
+            removal();
+            ev.emit(EV_1, ARG_1);
+            expect(l1.called).to.be.false;
+        });
+    });
+
     describe("on", () => {
         it("should call listener when event is emitted.", () => {
             const l1 = fake();

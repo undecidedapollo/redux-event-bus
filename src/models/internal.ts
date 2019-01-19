@@ -7,6 +7,7 @@ export interface IEventBusSource {
 }
 
 export interface IEventBusReceiver {
+    takeAll(listener: Listener): () => void;
     takeOne(actionType: string, listener: Listener): () => void;
     takeEvery(actionType: string, listener: Listener): () => void;
     cancel(actionType: string, listener: Listener): void;

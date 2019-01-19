@@ -1,10 +1,20 @@
 // src: https://gist.github.com/mudge/5830382
 
 export type Listener = (...args: any[]) => void;
+
+// I hate typescript
+const GLOBAL_HANDLERS: string = Symbol("GLOBAL_HANDLERS") as any;
+
 interface IEvents { [event: string]: Listener[]; }
+
+export const GLOBAL_HANDLERS_SYMBOL = (GLOBAL_HANDLERS as unknown) as symbol;
 
 export class EventEmitter {
     private readonly events: IEvents = {};
+
+    public all(listener: Listener): () => void {
+        return this.on(GLOBAL_HANDLERS, listener);
+    }
 
     public on(event: string, listener: Listener): () => void {
         if (typeof this.events[event] !== "object") {
@@ -33,11 +43,12 @@ export class EventEmitter {
     }
 
     public emit(event: string, ...args: any[]): void {
-        if (typeof this.events[event] !== "object") {
-            return;
-        }
+        const handlers = [
+            ...this.getHandlers(GLOBAL_HANDLERS),
+            ...this.getHandlers(event),
+        ];
 
-        [...this.events[event]].forEach((listener) => listener.apply(this, args));
+        handlers.forEach((listener) => listener.apply(this, args));
     }
 
     public once(event: string, listener: Listener): () => void {
@@ -47,5 +58,9 @@ export class EventEmitter {
         });
 
         return remove;
+    }
+
+    private getHandlers(event: string, devVal: any = []) {
+        return this.events[event] || devVal;
     }
 }

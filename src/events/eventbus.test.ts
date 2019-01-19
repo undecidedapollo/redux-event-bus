@@ -39,6 +39,46 @@ describe("EventBus", () => {
         });
     });
 
+    describe("takeAll", () => {
+        it("should call listener when event is emitted.", () => {
+            const l1 = fake();
+            ev.takeAll(l1);
+            ev.dispatch(EV_1);
+            expect(l1.callCount).to.equal(1);
+            expect(l1.alwaysCalledWithExactly(EV_1)).to.be.true;
+        });
+
+        it("should call multiple listeners that are subscribed.", () => {
+            const l1 = fake();
+            const l2 = fake();
+            ev.takeAll(l1);
+            ev.takeAll(l2);
+            ev.dispatch(EV_1);
+            expect(l1.callCount).to.equal(1);
+            expect(l1.alwaysCalledWithExactly(EV_1)).to.be.true;
+            expect(l2.callCount).to.equal(1);
+            expect(l2.alwaysCalledWithExactly(EV_1)).to.be.true;
+        });
+
+        it("should call listener multiple times when event is emitted multiple times.", () => {
+            const l1 = fake();
+            ev.takeAll(l1);
+            ev.dispatch(EV_1);
+            ev.dispatch(EV_1);
+            ev.dispatch(EV_1);
+            expect(l1.callCount).to.equal(3);
+            expect(l1.alwaysCalledWithExactly(EV_1)).to.be.true;
+        });
+
+        it("should not call listener if same listener removed", () => {
+            const l1 = fake();
+            const removal = ev.takeAll(l1);
+            removal();
+            ev.dispatch(EV_1);
+            expect(l1.called).to.be.false;
+        });
+    });
+
     describe("takeEvery", () => {
         it("should call listener when event is emitted.", () => {
             const l1 = fake();
